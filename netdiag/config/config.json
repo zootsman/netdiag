@@ -1,0 +1,86 @@
+{
+    "color": true,
+    "timeout": 5,
+    "report_format": "txt",
+    "cache_minutes": 10,
+    "port_scan": {
+        "enabled": true,
+        "hosts": ["google.com", "example.com"],
+        "default_ports": [80, 443, 22],
+        "timeout_per_port": 1
+    },
+    "services": [
+        {
+            "name": "Google",
+            "main_hostname": "www.google.com",
+            "domains": ["www.google.com", "google.com", "accounts.google.com"],
+            "expected_content_keywords": ["Google"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "blocked for your country"],
+            "icon": ":globe_with_meridians:",
+            "enabled": true
+        },
+        {
+            "name": "YouTube",
+            "main_hostname": "www.youtube.com",
+            "domains": ["www.youtube.com", "youtube.com", "youtu.be"],
+            "expected_content_keywords": ["YouTube", "Video"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "unavailable in your country"],
+            "icon": ":youtube:",
+            "enabled": true
+        },
+        {
+            "name": "Telegram",
+            "main_hostname": "web.telegram.org",
+            "domains": ["web.telegram.org", "t.me", "telegram.org"],
+            "expected_content_keywords": ["Telegram", "Telegram Web"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "This site can’t be reached"],
+            "icon": ":telegram:",
+            "enabled": true
+        },
+        {
+            "name": "Instagram",
+            "main_hostname": "www.instagram.com",
+            "domains": ["www.instagram.com", "instagram.com"],
+            "expected_content_keywords": ["Instagram", "Log In", "Sign Up"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "This page isn't available"],
+            "icon": ":camera:",
+            "enabled": true
+        },
+        {
+            "name": "Gemini",
+            "main_hostname": "gemini.google.com",
+            "domains": ["gemini.google.com", "ai.google.com"],
+            "expected_content_keywords": ["Gemini", "Google AI"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "not available in your country", "недоступно в вашей стране"],
+            "icon": ":gem:",
+            "enabled": true
+        },
+        {
+            "name": "ChatGPT",
+            "main_hostname": "chat.openai.com",
+            "domains": ["chat.openai.com", "openai.com"],
+            "expected_content_keywords": ["ChatGPT", "OpenAI"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "not available in your country"],
+            "icon": ":robot:",
+            "enabled": true
+        },
+        {
+            "name": "WhatsApp",
+            "main_hostname": "web.whatsapp.com",
+            "domains": ["web.whatsapp.com", "whatsapp.com"],
+            "expected_content_keywords": ["WhatsApp", "WhatsApp Web"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "This site can’t be reached"],
+            "icon": ":speech_balloon:",
+            "enabled": true
+        },
+        {
+            "name": "GitHub",
+            "main_hostname": "github.com",
+            "domains": ["github.com"],
+            "expected_content_keywords": ["GitHub", "Sign in"],
+            "blocked_content_keywords": ["доступ ограничен", "страница недоступна", "This site can’t be reached"],
+            "icon": ":spider_web:",
+            "enabled": true
+        }
+    ]
+}

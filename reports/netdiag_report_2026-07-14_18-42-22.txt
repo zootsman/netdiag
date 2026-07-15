@@ -1,0 +1,258 @@
+--- TIMESTAMP ---
+"2026-07-14 18:41:15"
+
+--- VERSION ---
+"0.1.0"
+
+--- NETWORK ---
+public_ip: "89.106.88.2"
+geo_ip: {
+  "status": "success",
+  "country": "Germany",
+  "countryCode": "DE",
+  "region": "HE",
+  "regionName": "Hesse",
+  "city": "Bad Soden am Taunus",
+  "zip": "65812",
+  "lat": 50.1592,
+  "lon": 8.48174,
+  "timezone": "Europe/Berlin",
+  "isp": "GHOSTnet GmbH",
+  "org": "GHOSTnet GmbH",
+  "as": "AS12586 GHOSTnet GmbH",
+  "query": "89.106.88.2"
+}
+
+--- DNS ---
+google_com_lookup: {
+  "A": [
+    "142.251.38.78"
+  ],
+  "AAAA": [
+    "2a00:1450:4026:800::200e"
+  ],
+  "MX": [
+    "10 smtp.google.com."
+  ],
+  "NS": [
+    "ns4.google.com.",
+    "ns1.google.com.",
+    "ns3.google.com.",
+    "ns2.google.com."
+  ]
+}
+dot_doh_checks: {
+  "8.8.8.8": {
+    "dot": true,
+    "doh": false
+  },
+  "8.8.4.4": {
+    "dot": true,
+    "doh": false
+  }
+}
+
+--- SERVICES ---
+Google: {
+  "main_host": {
+    "status": true,
+    "ping_time": null,
+    "message": "Сервис доступен (HTTP/HTTPS). Хост не пингуется.",
+    "advice": []
+  },
+  "other_domains": {
+    "google.com": {
+      "domain": "google.com",
+      "dns_resolved": true,
+      "ips": [
+        "142.251.38.78",
+        "2a00:1450:4026:800::200e"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 142.251.38.78, 2a00:1450:4026:800::200e, порты: 80 443).",
+      "advice": [],
+      "status": true
+    },
+    "accounts.google.com": {
+      "domain": "accounts.google.com",
+      "dns_resolved": true,
+      "ips": [
+        "64.233.162.84",
+        "2a00:1450:4010:c05::54"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 64.233.162.84, 2a00:1450:4010:c05::54, порты: 80 443).",
+      "advice": [],
+      "status": true
+    }
+  }
+}
+YouTube: {
+  "main_host": {
+    "status": true,
+    "ping_time": null,
+    "message": "Сервис доступен (HTTP/HTTPS). Хост не пингуется.",
+    "advice": []
+  },
+  "other_domains": {
+    "youtube.com": {
+      "domain": "youtube.com",
+      "dns_resolved": true,
+      "ips": [
+        "173.194.221.190",
+        "173.194.221.93",
+        "173.194.221.136",
+        "173.194.221.91",
+        "2a00:1450:4010:c0a::88",
+        "2a00:1450:4010:c0a::5b",
+        "2a00:1450:4010:c0a::be",
+        "2a00:1450:4010:c0a::5d"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 173.194.221.190, 173.194.221.93, 173.194.221.136, 173.194.221.91, 2a00:1450:4010:c0a::88, 2a00:1450:4010:c0a::5b, 2a00:1450:4010:c0a::be, 2a00:1450:4010:c0a::5d, порты: 80 443).",
+      "advice": [],
+      "status": true
+    },
+    "youtu.be": {
+      "domain": "youtu.be",
+      "dns_resolved": false,
+      "ips": [],
+      "port_80_open": false,
+      "port_443_open": false,
+      "message": "Ошибка DNS-разрешения: The resolution lifetime expired after 6.867 seconds: Server Do53:8.8.8.8@53 answered The DNS operation timed out.",
+      "advice": [
+        "Проверьте настройки DNS-сервера или попробуйте другой DNS-сервер (например, 8.8.8.8)."
+      ],
+      "status": false
+    }
+  }
+}
+Telegram: {
+  "main_host": {
+    "status": true,
+    "ping_time": null,
+    "message": "Сервис доступен (HTTP/HTTPS). Хост не пингуется.",
+    "advice": []
+  },
+  "other_domains": {
+    "t.me": {
+      "domain": "t.me",
+      "dns_resolved": false,
+      "ips": [],
+      "port_80_open": false,
+      "port_443_open": false,
+      "message": "Ошибка DNS-разрешения: The DNS query name does not exist: t.me.",
+      "advice": [
+        "Проверьте настройки DNS-сервера или попробуйте другой DNS-сервер (например, 8.8.8.8)."
+      ],
+      "status": false
+    },
+    "telegram.org": {
+      "domain": "telegram.org",
+      "dns_resolved": true,
+      "ips": [
+        "149.154.167.99",
+        "2001:67c:4e8:f004::9"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 149.154.167.99, 2001:67c:4e8:f004::9, порты: 80 443).",
+      "advice": [],
+      "status": true
+    }
+  }
+}
+Instagram: {
+  "main_host": {
+    "status": true,
+    "ping_time": null,
+    "message": "Сервис доступен (HTTP/HTTPS). Хост не пингуется.",
+    "advice": []
+  },
+  "other_domains": {
+    "instagram.com": {
+      "domain": "instagram.com",
+      "dns_resolved": true,
+      "ips": [
+        "157.240.205.174",
+        "2a03:2880:f213:e4:face:b00c:0:4420"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 157.240.205.174, 2a03:2880:f213:e4:face:b00c:0:4420, порты: 80 443).",
+      "advice": [],
+      "status": true
+    }
+  }
+}
+Gemini: {
+  "main_host": {
+    "status": true,
+    "ping_time": null,
+    "message": "Сервис доступен (HTTP/HTTPS). Хост не пингуется.",
+    "advice": []
+  },
+  "other_domains": {
+    "ai.google.com": {
+      "domain": "ai.google.com",
+      "dns_resolved": true,
+      "ips": [
+        "142.251.38.78",
+        "2a00:1450:4026:800::200e"
+      ],
+      "port_80_open": true,
+      "port_443_open": true,
+      "message": "Домен доступен (IP: 142.251.38.78, 2a00:1450:4026:800::200e, порты: 80 443).",
+      "advice": [],
+      "status": true
+    }
+  }
+}
+ChatGPT: {
+  "main_host": {
+    "status": false,
+    "ping_time": null,
+    "message": "Неизвестная ошибка запроса: 403 Client Error: Forbidden for url: https://chatgpt.com/ Хост не пингуется.",
+    "advice": [
+      "Проверьте логи сервиса и настройки сети.",
+      "Убедитесь, что хост доступен по ICMP (ping разрешен). Если нет, проверьте файервол."
+    ]
+  },
+  "other_domains": {
+    "openai.com": {
+      "domain": "openai.com",
+      "dns_resolved": false,
+      "ips": [],
+      "port_80_open": false,
+      "port_443_open": false,
+      "message": "Ошибка DNS-разрешения: The DNS response does not contain an answer to the question: openai.com. IN AAAA",
+      "advice": [
+        "Проверьте настройки DNS-сервера или попробуйте другой DNS-сервер (например, 8.8.8.8)."
+      ],
+      "status": false
+    }
+  }
+}
+
+--- DEPENDENCIES ---
+status: "ok"
+
+--- INACCESSIBLE_DOMAINS ---
+[
+  [
+    "ChatGPT",
+    "openai.com"
+  ],
+  [
+    "Telegram",
+    "t.me"
+  ],
+  [
+    "YouTube",
+    "youtu.be"
+  ]
+]
+
