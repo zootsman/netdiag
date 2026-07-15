@@ -1,0 +1,16 @@
+gemini_context.md
+__pycache__/
+*.pyc
+.pytest_cache/
+reports/
+logs/
+.DS_Store
+cache/
+.buildozer/
+bin/
+build/
+dist/
+*.apk
+*.aab
+.gradle/
+*.lock
