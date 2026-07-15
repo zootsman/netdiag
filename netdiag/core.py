@@ -124,6 +124,7 @@ async def perform_dot_doh_check(report_data, cfg):
 
     report_data["dns"]["dot_doh_checks"] = {}
     timeout = cfg.get("timeout", 5)
+    overall_failure = False
 
     for server in servers_to_check:
         server_name = server.get("name", "N/A")
@@ -140,6 +141,7 @@ async def perform_dot_doh_check(report_data, cfg):
                 console.print(f"[green]✔ DoT ({dot_host}) поддерживается[/green]")
             else:
                 console.print(f"[red]✘ DoT ({dot_host}) не поддерживается или заблокирован[/red]")
+                overall_failure = True
         else:
             report_data["dns"]["dot_doh_checks"][server_name]["dot"] = "not_configured"
 
@@ -152,8 +154,19 @@ async def perform_dot_doh_check(report_data, cfg):
                 console.print(f"[green]✔ DoH ({doh_url}) поддерживается[/green]")
             else:
                 console.print(f"[red]✘ DoH ({doh_url}) не поддерживается или заблокирован[/red]")
+                overall_failure = True
         else:
             report_data["dns"]["dot_doh_checks"][server_name]["doh"] = "not_configured"
+
+    if overall_failure:
+        console.print("\n[bold yellow]Обнаружены проблемы с доступностью защищенных DNS-серверов.[/bold yellow]")
+        console.print("  [bold]Объяснение:[/bold] Протоколы DNS-over-TLS (DoT) и DNS-over-HTTPS (DoH) шифруют ваши DNS-запросы,")
+        console.print("  повышая приватность и безопасность. Если эти серверы недоступны, это может быть признаком")
+        console.print("  блокировки со стороны вашего интернет-провайдера (ISP) или сетевого экрана.")
+        console.print("  [bold]Рекомендации:[/bold]")
+        console.print("  • Попробуйте использовать VPN для обхода возможных блокировок.")
+        console.print("  • Проверьте настройки вашего роутера или файервола на предмет блокировки портов 853 (DoT) или 443 (DoH).")
+        console.print("  • Вы можете настроить системный DNS на один из работающих серверов, если таковые имеются.")
 
 async def perform_icmp_analysis(report_data, cfg):
     """Runs ICMP analysis and displays results."""
@@ -165,12 +178,24 @@ async def perform_icmp_analysis(report_data, cfg):
         console.print("[yellow]Проверка отключена в конфигурации.[/yellow]")
         return
 
+    ping_failures = 0
     for host, result in icmp_results.get("ping_results", {}).items():
         if result["status"] == "ok":
             console.print(f"[green]✔ Ping {host}:[/green] {result['avg_latency_ms']:.2f} мс")
         else:
             console.print(f"[red]✘ Ping {host}:[/red] {result['error']}")
-    
+            ping_failures += 1
+            
+    if ping_failures > 0:
+        console.print("\n[bold yellow]Обнаружены проблемы с ICMP (Ping).[/bold yellow]")
+        console.print("  [bold]Объяснение:[/bold] Утилита ping отправляет ICMP-пакеты для проверки доступности хоста.")
+        console.print("  Неудачные попытки могут означать, что хост выключен, недоступен из вашей сети, или что")
+        console.print("  ICMP-трафик (используемый для ping) блокируется файерволом на пути к хосту или на самом хосте.")
+        console.print("  [bold]Рекомендации:[/bold]")
+        console.print("  • Убедитесь, что имя хоста написано правильно.")
+        console.print("  • Попробуйте пинговать другие хосты, чтобы определить, является ли проблема специфичной для одного адреса.")
+        console.print("  • Если все пинги не удаются, проверьте ваше интернет-соединение и настройки локального файервола.")
+
     traceroute_result = icmp_results.get("traceroute_result", {})
     if traceroute_result:
         console.print(f"\n[bold]Traceroute до {traceroute_result.get('host')}:[/bold]")
@@ -190,6 +215,7 @@ async def perform_tls_analysis(report_data, cfg):
         return
 
     warn_days = cfg.get("tls_check", {}).get("warn_days_before_expiry", 30)
+    tls_errors = 0
     for host, result in tls_results.get("hosts", {}).items():
         console.print(f"\n[bold magenta]Сертификат для {host}[/bold magenta]")
         if result["status"] == "ok":
@@ -202,12 +228,24 @@ async def perform_tls_analysis(report_data, cfg):
                 days_left = (expiry_date - datetime.now()).days
                 if days_left < 0:
                     console.print(f"  [bold red]❗ СЕРТИФИКАТ ИСТЕК {abs(days_left)} дней назад[/bold red]")
+                    tls_errors += 1
                 elif days_left < warn_days:
                     console.print(f"  [bold yellow]⚠ Истекает через {days_left} дней[/bold yellow]")
             else:
                 console.print("  [yellow]Не удалось определить дату истечения.[/yellow]")
         else:
             console.print(f"  [red]Ошибка: {result['error']}[/red]")
+            tls_errors += 1
+            
+    if tls_errors > 0:
+        console.print("\n[bold red]Обнаружены серьезные проблемы с SSL/TLS сертификатами![/bold red]")
+        console.print("  [bold]Объяснение:[/bold] SSL/TLS сертификаты используются для шифрования трафика и подтверждения подлинности сайтов.")
+        console.print("  Ошибки (истекший срок действия, неверное имя хоста, недоверенный издатель) могут указывать на попытку")
+        console.print("  перехвата вашего трафика (атака 'человек-по-середине', Man-in-the-Middle).")
+        console.print("  [bold]Рекомендации:[/bold]")
+        console.print("  • [bold red]КРАЙНЕ НЕ РЕКОМЕНДУЕТСЯ[/bold red] передавать чувствительные данные (пароли, номера карт) сайтам с ошибками сертификатов.")
+        console.print("  • Проблема может быть на стороне сервера. Если вы не доверяете сети, воздержитесь от использования ресурса.")
+        console.print("  • Убедитесь, что системное время на вашем устройстве настроено правильно, так как это влияет на проверку сертификатов.")
 
 async def perform_mtu_check(report_data, cfg):
     """Runs MTU check and displays results."""
