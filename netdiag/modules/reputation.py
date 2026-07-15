@@ -9,7 +9,7 @@ from ..utils import http_get
 import asyncio
 
 async def _check_ipinfo_io(ip_address: str, timeout: int) -> dict:
-    results = {"provider": "ipinfo.io", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": ""}
+    results = {"provider": "ipinfo.io", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": "", "has_error": False}
     url = f"https://ipinfo.io/{ip_address}/privacy"
     status_code, response_text = await http_get(url, timeout=timeout)
 
@@ -28,36 +28,48 @@ async def _check_ipinfo_io(ip_address: str, timeout: int) -> dict:
                 results["message"] = "Риски не обнаружены"
         except json.JSONDecodeError:
             results["message"] = "Ошибка парсинга JSON ответа"
+            results["has_error"] = True
     else:
-        results["message"] = f"Ошибка запроса (статус: {status_code})"
+        results["has_error"] = True
+        if status_code == 429:
+            results["message"] = "Ошибка: превышен лимит запросов к API"
+        else:
+            results["message"] = f"Ошибка запроса к API (статус: {status_code})"
     return results
 
 async def _check_ipapi_co(ip_address: str, timeout: int) -> dict:
-    results = {"provider": "ipapi.co", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": ""}
+    results = {"provider": "ipapi.co", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": "", "has_error": False}
     url = f"https://ipapi.co/{ip_address}/json/"
     status_code, response_text = await http_get(url, timeout=timeout)
 
     if status_code == 200:
         try:
             data = json.loads(response_text)
-            # ipapi.co uses different flags
-            results["vpn"] = data.get("security", {}).get("vpn", False)
-            results["proxy"] = data.get("security", {}).get("proxy", False)
-            results["hosting"] = data.get("security", {}).get("hosting", False)
-            results["tor"] = data.get("security", {}).get("tor", False)
-            
-            if any([results["vpn"], results["proxy"], results["tor"], results["hosting"]]):
-                results["message"] = "Обнаружены риски"
+            if data.get("error"):
+                results["message"] = f"Ошибка API: {data.get('reason')}"
+                results["has_error"] = True
             else:
-                results["message"] = "Риски не обнаружены"
+                results["vpn"] = data.get("security", {}).get("vpn", False)
+                results["proxy"] = data.get("security", {}).get("proxy", False)
+                results["hosting"] = data.get("security", {}).get("hosting", False)
+                results["tor"] = data.get("security", {}).get("tor", False)
+                if any([results["vpn"], results["proxy"], results["tor"], results["hosting"]]):
+                    results["message"] = "Обнаружены риски"
+                else:
+                    results["message"] = "Риски не обнаружены"
         except json.JSONDecodeError:
             results["message"] = "Ошибка парсинга JSON ответа"
+            results["has_error"] = True
     else:
-        results["message"] = f"Ошибка запроса (статус: {status_code})"
+        results["has_error"] = True
+        if status_code == 429:
+            results["message"] = "Ошибка: превышен лимит запросов к API (Too Many Requests)"
+        else:
+            results["message"] = f"Ошибка запроса к API (статус: {status_code})"
     return results
 
 async def _check_ip_api_com(ip_address: str, timeout: int) -> dict:
-    results = {"provider": "ip-api.com", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": ""}
+    results = {"provider": "ip-api.com", "vpn": False, "proxy": False, "tor": False, "hosting": False, "message": "", "has_error": False}
     url = f"http://ip-api.com/json/{ip_address}?fields=proxy,hosting"
     status_code, response_text = await http_get(url, timeout=timeout)
 
@@ -66,16 +78,19 @@ async def _check_ip_api_com(ip_address: str, timeout: int) -> dict:
             data = json.loads(response_text)
             results["proxy"] = data.get("proxy", False)
             results["hosting"] = data.get("hosting", False)
-            # ip-api.com does not explicitly have vpn/tor flags in free tier fields
-
             if any([results["proxy"], results["hosting"]]):
                 results["message"] = "Обнаружены риски"
             else:
                 results["message"] = "Риски не обнаружены"
         except json.JSONDecodeError:
             results["message"] = "Ошибка парсинга JSON ответа"
+            results["has_error"] = True
     else:
-        results["message"] = f"Ошибка запроса (статус: {status_code})"
+        results["has_error"] = True
+        if status_code == 429:
+            results["message"] = "Ошибка: превышен лимит запросов к API"
+        else:
+            results["message"] = f"Ошибка запроса к API (статус: {status_code})"
     return results
 
 async def check_ip_reputation(ip_address: str, config: dict) -> dict:

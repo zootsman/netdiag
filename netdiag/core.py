@@ -65,21 +65,36 @@ async def perform_network_analysis(report_data, cfg):
     
     if not reputation_info["check_enabled"]:
         console.print(f"[yellow]{reputation_info['message']}[/yellow]")
-    elif reputation_info["is_privacy_risk"]:
-        console.print(f"[red]❗ {reputation_info['message']}[/red]")
-        for provider_data in reputation_info["providers_data"]:
-            if provider_data.get("vpn") or provider_data.get("proxy") or provider_data.get("tor") or provider_data.get("hosting"):
-                issues = []
-                if provider_data.get("vpn"): issues.append("VPN")
-                if provider_data.get("proxy"): issues.append("Прокси")
-                if provider_data.get("tor"): issues.append("Tor")
-                if provider_data.get("hosting"): issues.append("Хостинг")
-                console.print(f"  [red]  • {provider_data['provider']}: Обнаружено: {', '.join(issues)} ({provider_data.get('message', 'Нет подробностей')})[/red]")
-            elif "Ошибка" in provider_data.get("message", ""):
-                 console.print(f"  [yellow]  • {provider_data['provider']}: {provider_data['message']}[/yellow]")
-    else:
-        console.print(f"[green]✔ {reputation_info['message']}[/green]")
+        return
+
+    console.print("\n[bold]Проверка репутации IP:[/bold]")
+    has_errors = False
+    for provider_data in reputation_info["providers_data"]:
+        if provider_data.get("has_error"):
+            console.print(f"  [yellow]• {provider_data['provider']}: {provider_data['message']}[/yellow]")
+            has_errors = True
+        elif provider_data.get("vpn") or provider_data.get("proxy") or provider_data.get("tor") or provider_data.get("hosting"):
+            issues = []
+            if provider_data.get("vpn"): issues.append("VPN")
+            if provider_data.get("proxy"): issues.append("Прокси")
+            if provider_data.get("tor"): issues.append("Tor")
+            if provider_data.get("hosting"): issues.append("Хостинг")
+            console.print(f"  [red]• {provider_data['provider']}: Обнаружено: {', '.join(issues)}[/red]")
+        else:
+            console.print(f"  [green]• {provider_data['provider']}: Риски не обнаружены[/green]")
+
+    if reputation_info["is_privacy_risk"]:
+        console.print(f"\n[red]❗ Общий результат: {reputation_info['message']}[/red]")
+        console.print("  [bold]Объяснение:[/bold] Ваш IP-адрес определяется некоторыми сервисами как VPN, прокси, Tor или хостинг.")
+        console.print("  Это может влиять на доступ к некоторым сайтам, которые блокируют такой трафик для защиты от спама и мошенничества.")
+    elif not has_errors:
+        console.print(f"\n[green]✔ Общий результат: {reputation_info['message']}[/green]")
     
+    if has_errors:
+        console.print("\n[bold yellow]Примечание по ошибкам API:[/bold yellow]")
+        console.print("  Некоторые API для проверки репутации могут иметь ограничения на количество бесплатных запросов.")
+        console.print("  Ошибки, связанные с лимитом, обычно решаются сами собой через некоторое время.")
+
     # CDN Check
     cdn_info = await check_cdn_info(ip, cfg["timeout"])
     report_data["network"]["cdn"] = cdn_info
