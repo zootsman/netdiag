@@ -1,0 +1,141 @@
+{
+    "color": true,
+    "timeout": 5,
+    "cache_minutes": 10,
+    "report": {
+        "enabled": false,
+        "format": "txt",
+        "filepath": "reports/netdiag_report_{timestamp}.txt"
+    },
+    "reputation": {
+        "enabled": true,
+        "provider": "ipinfo.io",
+        "api_token": "YOUR_IPINFO_TOKEN"
+    },
+    "icmp_analysis": {
+        "enabled": true,
+        "ping_hosts": [
+            "8.8.8.8",
+            "1.1.1.1",
+            "google.com"
+        ],
+        "traceroute_host": "google.com"
+    },
+    "tls_check": {
+        "enabled": true,
+        "check_hosts": [
+            "google.com",
+            "youtube.com",
+            "github.com"
+        ],
+        "warn_days_before_expiry": 30
+    },
+    "mtu_check": {
+        "enabled": true,
+        "host": "8.8.8.8",
+        "start_size": 1400,
+        "end_size": 1500
+    },
+    "dot_doh_check": {
+        "enabled": true,
+        "servers": [
+            {
+                "name": "Google",
+                "dot_host": "dns.google",
+                "doh_url": "https://dns.google/dns-query",
+                "ip": "8.8.8.8"
+            },
+            {
+                "name": "Cloudflare",
+                "dot_host": "cloudflare-dns.com",
+                "doh_url": "https://cloudflare-dns.com/dns-query",
+                "ip": "1.1.1.1"
+            },
+            {
+                "name": "Quad9",
+                "dot_host": "dns.quad9.net",
+                "doh_url": "https://dns.quad9.net/dns-query",
+                "ip": "9.9.9.9"
+            },
+            {
+                "name": "AdGuard",
+                "dot_host": "dns.adguard-dns.com",
+                "doh_url": "https://dns.adguard-dns.com/dns-query",
+                "ip": "94.140.14.14"
+            }
+        ]
+    },
+    "services": [
+        {
+            "name": "Google",
+            "enabled": true,
+            "main_hostname": "www.google.com",
+            "expected_content_keywords": ["Google"],
+            "blocked_content_keywords": ["captcha"],
+            "icon": "🌐"
+        },
+        {
+            "name": "YouTube",
+            "enabled": true,
+            "main_hostname": "www.youtube.com",
+            "expected_content_keywords": ["YouTube"],
+            "blocked_content_keywords": [],
+            "icon": ":youtube:"
+        },
+        {
+            "name": "Telegram",
+            "enabled": true,
+            "main_hostname": "web.telegram.org",
+            "expected_content_keywords": ["Telegram"],
+            "blocked_content_keywords": [],
+            "icon": ":telegram:"
+        },
+        {
+            "name": "Instagram",
+            "enabled": true,
+            "main_hostname": "www.instagram.com",
+            "expected_content_keywords": ["Sign Up"],
+            "blocked_content_keywords": [],
+            "icon": "📷"
+        },
+        {
+            "name": "Gemini",
+            "enabled": true,
+            "main_hostname": "gemini.google.com",
+            "expected_content_keywords": ["Sign in"],
+            "blocked_content_keywords": [],
+            "icon": "💎"
+        },
+        {
+            "name": "ChatGPT",
+            "enabled": true,
+            "main_hostname": "chat.openai.com",
+            "expected_content_keywords": ["ChatGPT"],
+            "blocked_content_keywords": [],
+            "icon": "🤖",
+            "domains": ["openai.com"]
+        },
+        {
+            "name": "WhatsApp",
+            "enabled": true,
+            "main_hostname": "web.whatsapp.com",
+            "expected_content_keywords": ["WhatsApp"],
+            "blocked_content_keywords": [],
+            "icon": "💬"
+        },
+        {
+            "name": "GitHub",
+            "enabled": true,
+            "main_hostname": "github.com",
+            "expected_content_keywords": ["GitHub"],
+            "blocked_content_keywords": [],
+            "icon": "🕸"
+        }
+    ],
+    "port_scan": {
+        "enabled": true,
+        "hosts": ["google.com", "example.com"],
+        "default_ports": [80, 443, 22],
+        "timeout_per_port": 1
+    }
+}
