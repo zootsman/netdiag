@@ -55,9 +55,14 @@ async def run_port_scan(report_data: dict, cfg: dict):
 
     console.print("\n[bold cyan]Сканирование портов[/bold cyan]")
     
+    overall_table = Table(title="Результаты сканирования портов", show_lines=True)
+    overall_table.add_column("Хост", style="cyan", justify="left")
+    overall_table.add_column("Открытые порты", style="green", justify="left")
+    overall_table.add_column("Закрытые/фильтруемые порты", style="red", justify="left")
+
     for host in target_hosts:
-        console.print(f"\n[bold magenta]Сканирование хоста: {host}[/bold magenta]")
-        host_results = {"open_ports": [], "closed_ports": [], "errored_ports": []}
+        open_ports_set = set()
+        closed_ports_set = set()
         
         tasks = []
         for port in default_ports:
@@ -67,17 +72,25 @@ async def run_port_scan(report_data: dict, cfg: dict):
 
         for port, is_open in zip(default_ports, scan_results):
             if is_open:
-                host_results["open_ports"].append(port)
+                open_ports_set.add(str(port))
             else:
-                host_results["closed_ports"].append(port) # For now, assume not open means closed/filtered
+                closed_ports_set.add(str(port))
 
+        host_results = {
+            "open_ports": sorted(list(open_ports_set), key=int),
+            "closed_ports": sorted(list(closed_ports_set), key=int),
+            "errored_ports": [] # Not directly handled by sets, keep as is for now
+        }
         results["hosts"][host] = host_results
 
-        if host_results["open_ports"]:
-            console.print(f"[green]Открытые порты:[/green] {', '.join(map(str, host_results['open_ports']))}")
-        else:
-            console.print("[yellow]Открытых портов не найдено.[/yellow]")
+        overall_table.add_row(
+            host,
+            ", ".join(host_results["open_ports"]) if host_results["open_ports"] else "[yellow]Нет[/yellow]",
+            ", ".join(host_results["closed_ports"]) if host_results["closed_ports"] else "[green]Нет[/green]"
+        )
             
+    console.print(overall_table)
+
     # Add to report data
     report_data["port_scan"] = results
     
