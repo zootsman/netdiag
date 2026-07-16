@@ -6,18 +6,7 @@ import json
 from .version import get_version
 from .dependency import check_dependencies
 from .config import load_config
-from .plugin_manager import PluginManager
-
-# Import all plugins
-from .plugins.network import NetworkPlugin
-from .plugins.dns import DNSPlugin
-from .plugins.dot_doh import DotDohPlugin
-from .plugins.icmp import ICMPPlugin
-from .plugins.tls import TLSPlugin
-from .plugins.mtu import MTUPlugin
-from .plugins.services import ServicesPlugin
-from .plugins.dns_benchmark import DNSBenchmarkPlugin
-from .plugins.port_scan import PortScanPlugin
+from .plugin_manager import PluginManager # Import PluginManager
 
 from .modules.dns import initialize_resolver
 from .utils import save_report, now
@@ -67,18 +56,8 @@ def save_report_if_enabled(report_data, cfg):
     else:
         console.print(f"\n[red]Не удалось сохранить отчет в {filepath}[/red]")
 
-# A dictionary mapping check names to their functions and descriptions
-AVAILABLE_CHECKS = {
-    "network": {"func": NetworkPlugin, "desc": "Анализ сети и репутации IP"},
-    "dns": {"func": DNSPlugin, "desc": "DNS Запрос (google.com)"},
-    "dot_doh": {"func": DotDohPlugin, "desc": "Проверка DoT/DoH"},
-    "icmp": {"func": ICMPPlugin, "desc": "Анализ ICMP (Ping, Traceroute)"},
-    "tls": {"func": TLSPlugin, "desc": "Проверка SSL/TLS Сертификатов"},
-    "mtu": {"func": MTUPlugin, "desc": "Определение MTU"},
-    "services": {"func": ServicesPlugin, "desc": "Проверки Сервисов"},
-    "dns_benchmark": {"func": DNSBenchmarkPlugin, "desc": "Бенчмарк DNS-резолверов"},
-    "port_scan": {"func": PortScanPlugin, "desc": "Сканирование портов"},
-}
+# AVAILABLE_CHECKS is now part of PluginManager after discovery
+# This dictionary will be dynamically populated in PluginManager
 
 async def run(checks_to_run: list = None):
     """
@@ -108,11 +87,15 @@ async def run(checks_to_run: list = None):
         return # Stop if dependencies are missing
     
     plugin_manager = PluginManager(console, cfg, report_data)
+    plugin_manager.discover_plugins() # Discover plugins dynamically
     
-    # Register all plugins
-    for check in AVAILABLE_CHECKS.values():
-        plugin_manager.register(check['func'])
-
+    # After discovery, we can get the available checks from the plugin manager
+    # This is a temporary placeholder; ideally, netdiag.py would get this directly
+    # from PluginManager or a centralized source.
+    # For now, we still need AVAILABLE_CHECKS in netdiag.py, so it will be
+    # generated from plugin_manager.plugins.
+    # This will be addressed in a later step (suggestion #5)
+    
     if checks_to_run:
         await plugin_manager.run_specific(checks_to_run)
     else:

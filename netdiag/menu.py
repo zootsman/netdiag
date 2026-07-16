@@ -1,13 +1,19 @@
 import questionary
-from .core import run, AVAILABLE_CHECKS
+from .core import run
+from .plugin_manager import PluginManager # Import PluginManager
 
 async def show_menu():
     """
     Displays an interactive menu for the user to select which network checks to run.
     """
+    # Create a dummy PluginManager to discover plugins for menu display
+    dummy_plugin_manager = PluginManager(None, None, None) # Pass None for console, config, report_data
+    dummy_plugin_manager.discover_plugins()
+    AVAILABLE_CHECKS_INFO = dummy_plugin_manager.get_available_checks_info()
+
     # Create a mapping from description to the check's key
     desc_to_key = {"Все проверки": "all"}
-    desc_to_key.update({info["desc"]: key for key, info in AVAILABLE_CHECKS.items()})
+    desc_to_key.update({info["desc"]: key for key, info in AVAILABLE_CHECKS_INFO.items()})
 
     # Get the list of descriptions to show the user
     descriptions = list(desc_to_key.keys())
